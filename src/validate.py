@@ -27,7 +27,7 @@ X_test = np.array(X_test)
 X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
 
 # --- Cargar modelo previamente entrenado ---
-model_filename = "mlruns/620e0f570b114d5c8fd4571361a749b7/artifacts/model/model.pkl"
+model_filename = "mlruns/edcfd3cb3c704977b7e643246734a203/artifacts/model/model.pkl"
 model_path = os.path.abspath(os.path.join(os.getcwd(), model_filename))
 print(f"--- Debug: Intentando cargar modelo desde: {model_path} ---")
 
