@@ -1,14 +1,22 @@
 import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import mlflow
 import mlflow.sklearn
-from sklearn.datasets import load_diabetes
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-import pandas as pd
-from mlflow.models import infer_signature
 import sys
 import traceback
+import numpy as np
+import joblib
+
+# Redes neuronales
+import keras
+from keras.models import Sequential
+from keras.layers import LSTM, Dense, Input
+keras.utils.set_random_seed(64)
+# Evaluación
+from sklearn.metrics import mean_squared_error
+
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 print(f"--- Debug: Initial CWD: {os.getcwd()} ---")
 
@@ -32,7 +40,7 @@ os.makedirs(mlruns_dir, exist_ok=True)
 mlflow.set_tracking_uri(tracking_uri)
 
 # --- Crear o Establecer Experimento Explícitamente con Artifact Location ---
-experiment_name = "CI-CD-Lab2"
+experiment_name = "CI-CD-Proyecto final"
 experiment_id = None # Inicializar variable
 try:
     # Intentar crear el experimento, proporcionando la ubicación del artefacto
@@ -67,12 +75,64 @@ if experiment_id is None:
     sys.exit(1)
 
 # --- Cargar Datos y Entrenar Modelo ---
-X, y = load_diabetes(return_X_y=True)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-model = LinearRegression()
-model.fit(X_train, y_train)
-preds = model.predict(X_test)
-mse = mean_squared_error(y_test, preds)
+time_step = 10
+trm_df_train_scaled = np.loadtxt('trm_df_train_scaled.csv', delimiter=',').reshape(-1, 1)
+trm_df_val_scaled = np.loadtxt('trm_df_val_scaled.csv', delimiter=',').reshape(-1, 1)
+trm_df_test_scaled = np.array(np.loadtxt('trm_df_test_scaled.csv', delimiter=',')).reshape(-1, 1)
+
+print("Train: ")
+print(trm_df_train_scaled)
+print("Test: ")
+print(trm_df_test_scaled)
+
+# Entrenamiento
+X_train = []
+Y_train = []
+m = len(trm_df_train_scaled)
+
+for i in range(time_step,m):
+    X_train.append(trm_df_train_scaled[i-time_step:i,0])
+    Y_train.append(trm_df_train_scaled[i,0])
+X_train, Y_train = np.array(X_train), np.array(Y_train)
+
+# Validación
+X_val = []
+Y_val = []
+m = len(trm_df_val_scaled)
+
+for i in range(time_step,m):
+    X_val.append(trm_df_val_scaled[i-time_step:i,0])
+    Y_val.append(trm_df_val_scaled[i,0])
+X_val, Y_val = np.array(X_val), np.array(Y_val)
+
+X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
+X_val = np.reshape(X_val, (X_val.shape[0], X_val.shape[1], 1))
+
+dim_salida = 1
+na = 70
+
+modelo = Sequential()
+modelo.add(Input(shape=(X_train.shape[1],1)))
+modelo.add(LSTM(units=na))
+modelo.add(Dense(units=dim_salida))
+
+modelo.compile(optimizer='rmsprop', loss='mse')
+modelo.fit(X_train,Y_train,epochs=150,batch_size=9,validation_data=(X_val,Y_val),verbose=1)
+
+X_test = []
+for i in range(time_step,len(trm_df_test_scaled)):
+    X_test.append(trm_df_test_scaled[i-time_step:i,0])
+X_test = np.array(X_test)
+X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
+
+min_max_scaler = joblib.load('scaler.pkl')
+prediccion = modelo.predict(X_test)
+prediccion = min_max_scaler.inverse_transform(prediccion)
+real = min_max_scaler.inverse_transform(trm_df_test_scaled[time_step:len(trm_df_test_scaled),0].reshape(-1,1))
+
+mse_lstm = mean_squared_error(real, prediccion)
+mae_lstm= mean_absolute_error(real, prediccion)
+r2_lstm = r2_score(real, prediccion)
 
 # --- Iniciar Run de MLflow ---
 print(f"--- Debug: Iniciando run de MLflow en Experimento ID: {experiment_id} ---") # Añadir ID aquí
@@ -94,14 +154,14 @@ try:
              print(f"--- ¡¡¡ERROR CRÍTICO!!!: La URI del Artefacto del Run '{actual_artifact_uri}' TODAVÍA contiene la ruta local incorrecta! ---")
 
 
-        mlflow.log_metric("mse", mse)
+        mlflow.log_metric("mse", mse_lstm)
         print(f"--- Debug: Intentando log_model con artifact_path='model' ---")
 
         mlflow.sklearn.log_model(
-            sk_model=model,
+            sk_model=modelo,
             artifact_path="model"
         )
-        print(f"✅ Modelo registrado correctamente. MSE: {mse:.4f}")
+        print(f"✅ Modelo registrado correctamente. MSE: {mse_lstm:.4f}")
 
 except Exception as e:
     print(f"\n--- ERROR durante la ejecución de MLflow ---")
