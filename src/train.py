@@ -7,15 +7,11 @@ import sys
 import traceback
 import numpy as np
 import joblib
-
-# Redes neuronales
 import keras
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Input
 keras.utils.set_random_seed(64)
 # Evaluación
-from sklearn.metrics import mean_squared_error
-
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 print(f"--- Debug: Initial CWD: {os.getcwd()} ---")
@@ -74,16 +70,11 @@ if experiment_id is None:
     print(f"--- ERROR FATAL: No se pudo obtener un ID de experimento válido para '{experiment_name}'. ---")
     sys.exit(1)
 
-# --- Cargar Datos y Entrenar Modelo ---
+# Cargar datos desde archivos csv y entrenar Modelo ---
 time_step = 10
 trm_df_train_scaled = np.loadtxt('trm_df_train_scaled.csv', delimiter=',').reshape(-1, 1)
 trm_df_val_scaled = np.loadtxt('trm_df_val_scaled.csv', delimiter=',').reshape(-1, 1)
-trm_df_test_scaled = np.array(np.loadtxt('trm_df_test_scaled.csv', delimiter=',')).reshape(-1, 1)
-
-print("Train: ")
-print(trm_df_train_scaled)
-print("Test: ")
-print(trm_df_test_scaled)
+trm_df_test_scaled = np.loadtxt('trm_df_test_scaled.csv', delimiter=',').reshape(-1, 1)
 
 # Entrenamiento
 X_train = []
@@ -119,17 +110,18 @@ modelo.add(Dense(units=dim_salida))
 modelo.compile(optimizer='rmsprop', loss='mse')
 modelo.fit(X_train,Y_train,epochs=150,batch_size=9,validation_data=(X_val,Y_val),verbose=1)
 
+# Prueba
 X_test = []
 for i in range(time_step,len(trm_df_test_scaled)):
     X_test.append(trm_df_test_scaled[i-time_step:i,0])
 X_test = np.array(X_test)
 X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
-
+# Se importa scaler
 min_max_scaler = joblib.load('scaler.pkl')
 prediccion = modelo.predict(X_test)
 prediccion = min_max_scaler.inverse_transform(prediccion)
 real = min_max_scaler.inverse_transform(trm_df_test_scaled[time_step:len(trm_df_test_scaled),0].reshape(-1,1))
-
+# métricas
 mse_lstm = mean_squared_error(real, prediccion)
 mae_lstm= mean_absolute_error(real, prediccion)
 r2_lstm = r2_score(real, prediccion)

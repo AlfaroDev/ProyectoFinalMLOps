@@ -34,4 +34,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: modelo-validado
-          path: mlruns/edcfd3cb3c704977b7e643246734a203/artifacts/model/model.pkl
+          path: mlruns/5e59a801d8c641bbbeaf664295e5e18d/artifacts/model/model.pkl

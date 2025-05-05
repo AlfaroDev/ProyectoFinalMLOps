@@ -1,4 +1,3 @@
-# src/validate.py
 import joblib
 import pandas as pd
 from sklearn.metrics import mean_squared_error
@@ -7,16 +6,12 @@ import sys
 import os
 
 # Parámetro de umbral
-THRESHOLD = 10.0  # Ajusta este umbral según el MSE esperado para load_diabetes
+THRESHOLD = 10.0  # Ajusta este umbral según el MSE esperado
 
 # --- Cargar el MISMO dataset que en train.py ---
-print("--- Debug: Cargando dataset load_diabetes ---")
-# División de datos (usar los mismos datos que en entrenamiento no es ideal para validación real,
-# pero necesario aquí para que las dimensiones coincidan. Idealmente, tendrías un split dedicado
-# o usarías el X_test guardado del entrenamiento si fuera posible)
-# Para este ejemplo, simplemente re-dividimos para obtener un X_test con 10 features.
+print("--- Debug: Cargando dataset de TRM ---")
 trm_df_train_scaled = np.loadtxt('trm_df_train_scaled.csv', delimiter=',').reshape(-1, 1)
-trm_df_test_scaled = np.array(np.loadtxt('trm_df_test_scaled.csv', delimiter=',')).reshape(-1, 1)
+trm_df_test_scaled = np.loadtxt('trm_df_test_scaled.csv', delimiter=',').reshape(-1, 1)
 
 time_step = 10
 X_test = []
@@ -27,7 +22,7 @@ X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
 print(f"--- Debug: Dimensiones de X_test: {X_test.shape} ---") 
 
 # --- Cargar modelo previamente entrenado ---
-model_filename = "mlruns/edcfd3cb3c704977b7e643246734a203/artifacts/model/model.pkl"
+model_filename = "mlruns/5e59a801d8c641bbbeaf664295e5e18d/artifacts/model/model.pkl"
 model_path = os.path.abspath(os.path.join(os.getcwd(), model_filename))
 print(f"--- Debug: Intentando cargar modelo desde: {model_path} ---")
 
