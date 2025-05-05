@@ -17,7 +17,6 @@ print("--- Debug: Cargando dataset load_diabetes ---")
 # Para este ejemplo, simplemente re-dividimos para obtener un X_test con 10 features.
 trm_df_train_scaled = np.loadtxt('trm_df_train_scaled.csv', delimiter=',').reshape(-1, 1)
 trm_df_test_scaled = np.array(np.loadtxt('trm_df_test_scaled.csv', delimiter=',')).reshape(-1, 1)
-print(f"--- Debug: Dimensiones de X_test: {trm_df_test_scaled.shape} ---") 
 
 time_step = 10
 X_test = []
@@ -25,6 +24,7 @@ for i in range(time_step,len(trm_df_test_scaled)):
     X_test.append(trm_df_test_scaled[i-time_step:i,0])
 X_test = np.array(X_test)
 X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
+print(f"--- Debug: Dimensiones de X_test: {X_test.shape} ---") 
 
 # --- Cargar modelo previamente entrenado ---
 model_filename = "mlruns/edcfd3cb3c704977b7e643246734a203/artifacts/model/model.pkl"
