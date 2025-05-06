@@ -1,4 +1,4 @@
-train:
+preprocessing:
 	python src/preprocessing.py  
 train:
 	python src/train.py  
