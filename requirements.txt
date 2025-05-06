@@ -4,3 +4,4 @@ mlflow
 joblib
 keras
 tensorflow
+pyyaml

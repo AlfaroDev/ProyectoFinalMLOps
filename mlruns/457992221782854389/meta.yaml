@@ -1,6 +1,6 @@
 artifact_location: file:\C:\Users\dfaq_\Downloads\Maestría_Ciencia_de_datos\Semestre_1\MLOps\Proyecto_final_MLOps\mlflow-deploy\mlruns
-creation_time: 1746410154708
-experiment_id: '317768329404364067'
-last_update_time: 1746410154708
+creation_time: 1746559724373
+experiment_id: '457992221782854389'
+last_update_time: 1746559724373
 lifecycle_stage: active
 name: CI-CD-Proyecto final

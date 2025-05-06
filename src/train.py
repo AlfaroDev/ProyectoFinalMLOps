@@ -13,6 +13,23 @@ from keras.layers import LSTM, Dense, Input
 keras.utils.set_random_seed(64)
 # Evaluación
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+# Trabajar con config.yml
+import yaml
+
+def load_config(path='config.yml'):
+    with open(path, 'r') as file:
+        config = yaml.safe_load(file)
+    return config
+
+config = load_config()
+
+experiment_name = config['settings']['experiment_name']
+time_step = config['settings']['time_step']
+batch_size = config['settings']['batch_size']
+epochs = config['settings']['epochs']
+units_LSTM = config['settings']['units_LSTM']
+
+print(f"Usando variables de config.yml")
 
 print(f"--- Debug: Initial CWD: {os.getcwd()} ---")
 
@@ -36,7 +53,7 @@ os.makedirs(mlruns_dir, exist_ok=True)
 mlflow.set_tracking_uri(tracking_uri)
 
 # --- Crear o Establecer Experimento Explícitamente con Artifact Location ---
-experiment_name = "CI-CD-Proyecto final"
+experiment_name = experiment_name
 experiment_id = None # Inicializar variable
 try:
     # Intentar crear el experimento, proporcionando la ubicación del artefacto
@@ -71,7 +88,7 @@ if experiment_id is None:
     sys.exit(1)
 
 # Cargar datos desde archivos csv y entrenar Modelo ---
-time_step = 10
+time_step = time_step
 trm_df_train_scaled = np.loadtxt('trm_df_train_scaled.csv', delimiter=',').reshape(-1, 1)
 trm_df_val_scaled = np.loadtxt('trm_df_val_scaled.csv', delimiter=',').reshape(-1, 1)
 trm_df_test_scaled = np.loadtxt('trm_df_test_scaled.csv', delimiter=',').reshape(-1, 1)
@@ -100,7 +117,7 @@ X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
 X_val = np.reshape(X_val, (X_val.shape[0], X_val.shape[1], 1))
 
 dim_salida = 1
-na = 70
+na = units_LSTM
 
 modelo = Sequential()
 modelo.add(Input(shape=(X_train.shape[1],1)))
@@ -108,7 +125,7 @@ modelo.add(LSTM(units=na))
 modelo.add(Dense(units=dim_salida))
 
 modelo.compile(optimizer='rmsprop', loss='mse')
-modelo.fit(X_train,Y_train,epochs=150,batch_size=9,validation_data=(X_val,Y_val),verbose=1)
+modelo.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size,validation_data=(X_val,Y_val),verbose=1)
 
 # Prueba
 X_test = []
@@ -147,13 +164,15 @@ try:
 
 
         mlflow.log_metric("mse", mse_lstm)
+        mlflow.log_metric("mae", mae_lstm)
+        mlflow.log_metric("r2", r2_lstm)
         print(f"--- Debug: Intentando log_model con artifact_path='model' ---")
 
         mlflow.sklearn.log_model(
             sk_model=modelo,
             artifact_path="model"
         )
-        print(f"✅ Modelo registrado correctamente. MSE: {mse_lstm:.4f}")
+        print(f"✅ Modelo registrado correctamente. MSE: {mse_lstm:.4f}, MAE: {mae_lstm:.4f}, R2: {r2_lstm:.4f}")
 
 except Exception as e:
     print(f"\n--- ERROR durante la ejecución de MLflow ---")

@@ -8,9 +8,23 @@ from dateutil.relativedelta import relativedelta
 from sklearn import preprocessing
 # Exportación
 import joblib
+# Trabajar con config.yml
+import yaml
+
+def load_config(path='config.yml'):
+    with open(path, 'r') as file:
+        config = yaml.safe_load(file)
+    return config
+
+config = load_config()
+
+data_source = config['paths']['data_source']
+years = config['settings']['years']
+
+print(f"Usando variables de config.yml")
 
 # Importación de los datos
-response = requests.get('https://www.datos.gov.co/resource/ceyp-9c7c.json')
+response = requests.get(data_source)
 trm_json_array = response.json()
 trm_df = pd.DataFrame(trm_json_array)
 # Eliminación de columna redundante
@@ -18,13 +32,13 @@ trm_df.drop('vigenciadesde', axis=1, inplace=True)
 trm_df.rename(columns = {'vigenciahasta':'vigencia'}, inplace = True)
 # Formato columna vigencia
 trm_df['vigencia'] = trm_df['vigencia'].astype('datetime64[ns]')
-# Restricción a datos con antiguedad máxima de 3 años respecto al registro más reciente
+# Restricción a datos con antiguedad máxima de years años respecto al registro más reciente
 latest_register = trm_df['vigencia'].max()
-trm_df_3_years_ago = trm_df[(trm_df['vigencia'] > latest_register - relativedelta(years=3))]
+trm_df_defined_years_ago = trm_df[(trm_df['vigencia'] > latest_register - relativedelta(years=years))]
 # División de los datos en train, validation y test por antiguedad
-trm_df_train = trm_df_3_years_ago[(trm_df_3_years_ago['vigencia'] < latest_register - relativedelta(months=6))]
-trm_df_val = trm_df_3_years_ago[(trm_df_3_years_ago['vigencia'] >= latest_register - relativedelta(months=6)) & (trm_df_3_years_ago['vigencia'] < latest_register - relativedelta(months=3))]
-trm_df_test = trm_df_3_years_ago[(trm_df_3_years_ago['vigencia'] >= latest_register - relativedelta(months=3))]
+trm_df_train = trm_df_defined_years_ago[(trm_df_defined_years_ago['vigencia'] < latest_register - relativedelta(months=6))]
+trm_df_val = trm_df_defined_years_ago[(trm_df_defined_years_ago['vigencia'] >= latest_register - relativedelta(months=6)) & (trm_df_defined_years_ago['vigencia'] < latest_register - relativedelta(months=3))]
+trm_df_test = trm_df_defined_years_ago[(trm_df_defined_years_ago['vigencia'] >= latest_register - relativedelta(months=3))]
 # Se deja solo el valor trm en cada dataset
 trm_df_train.drop('vigencia', axis=1, inplace=True)
 trm_df_val.drop('vigencia', axis=1, inplace=True)

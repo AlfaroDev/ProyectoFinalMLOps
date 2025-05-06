@@ -4,6 +4,20 @@ from sklearn.metrics import mean_squared_error
 import numpy as np
 import sys
 import os
+# Trabajar con config.yml
+import yaml
+
+def load_config(path='config.yml'):
+    with open(path, 'r') as file:
+        config = yaml.safe_load(file)
+    return config
+
+config = load_config()
+
+model_path = config['paths']['model_path']
+time_step = config['settings']['time_step']
+
+print(f"Usando variables de config.yml")
 
 # Parámetro de umbral
 THRESHOLD = 10.0  # Ajusta este umbral según el MSE esperado
@@ -13,7 +27,7 @@ print("--- Debug: Cargando dataset de TRM ---")
 trm_df_train_scaled = np.loadtxt('trm_df_train_scaled.csv', delimiter=',').reshape(-1, 1)
 trm_df_test_scaled = np.loadtxt('trm_df_test_scaled.csv', delimiter=',').reshape(-1, 1)
 
-time_step = 10
+time_step = time_step
 X_test = []
 for i in range(time_step,len(trm_df_test_scaled)):
     X_test.append(trm_df_test_scaled[i-time_step:i,0])
@@ -22,8 +36,8 @@ X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
 print(f"--- Debug: Dimensiones de X_test: {X_test.shape} ---") 
 
 # --- Cargar modelo previamente entrenado ---
-model_filename = "mlruns/5e59a801d8c641bbbeaf664295e5e18d/artifacts/model/model.pkl"
-model_path = os.path.abspath(os.path.join(os.getcwd(), model_filename))
+model_filename = "model.pkl"
+model_path = os.path.abspath(os.path.join(os.getcwd(), model_path + model_filename))
 print(f"--- Debug: Intentando cargar modelo desde: {model_path} ---")
 
 try:

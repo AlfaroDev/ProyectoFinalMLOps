@@ -23,6 +23,9 @@ jobs:
           pip install -r requirements.txt
           pip install mlflow joblib scikit-learn pandas
 
+      - name: ⚙️ Preprocesar dataset
+        run: make preprocessing
+
       - name: 🧪 Entrenar modelo
         run: make train
 
@@ -34,4 +37,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: modelo-validado
-          path: mlruns/5e59a801d8c641bbbeaf664295e5e18d/artifacts/model/model.pkl
+          path: mlruns/b18e78da3b4642be94211ddc45d0df06/artifacts/model/model.pkl

@@ -1,0 +1,15 @@
+artifact_uri: file:\C:\Users\dfaq_\Downloads\Maestría_Ciencia_de_datos\Semestre_1\MLOps\Proyecto_final_MLOps\mlflow-deploy\mlruns/b18e78da3b4642be94211ddc45d0df06/artifacts
+end_time: 1746559898563
+entry_point_name: ''
+experiment_id: '457992221782854389'
+lifecycle_stage: active
+run_id: b18e78da3b4642be94211ddc45d0df06
+run_name: polite-moth-942
+run_uuid: b18e78da3b4642be94211ddc45d0df06
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1746559824253
+status: 3
+tags: []
+user_id: PrincipalDA

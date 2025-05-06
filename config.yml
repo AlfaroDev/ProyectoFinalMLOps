@@ -1,0 +1,11 @@
+paths:
+  data_source: "https://www.datos.gov.co/resource/ceyp-9c7c.json"
+  model_path : "mlruns/b18e78da3b4642be94211ddc45d0df06/artifacts/model/"
+
+settings:
+  years: 3
+  experiment_name : "CI-CD-Proyecto final"
+  time_step : 10
+  batch_size : 9
+  epochs : 150
+  units_LSTM : 70
