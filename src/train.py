@@ -151,7 +151,7 @@ def main(fit_intercept: bool, registered_model_name: str):
     run = None
 
     # MLflow tracking
-    mlflow.set_tracking_uri("http://127.0.0.1:8080")
+    # mlflow.set_tracking_uri("http://127.0.0.1:8080")
     try:
         # Iniciar el run PASANDO EXPLÍCITAMENTE el experiment_id
         with mlflow.start_run(experiment_id=experiment_id) as run: # <--- CAMBIO CLAVE
