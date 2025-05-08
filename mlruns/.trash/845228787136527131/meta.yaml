@@ -1,0 +1,7 @@
+artifact_location: mlflow-artifacts:/845228787136527131
+creation_time: 1746730306075
+experiment_id: '845228787136527131'
+last_update_time: 1746734678407
+lifecycle_stage: deleted
+name: LSTM - TRM
+tags: {}

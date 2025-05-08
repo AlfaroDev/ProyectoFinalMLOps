@@ -1,0 +1,15 @@
+artifact_uri: file:\C:\Users\dfaq_\Downloads\Maestría_Ciencia_de_datos\Semestre_1\MLOps\Proyecto_final_MLOps\mlflow-deploy\mlruns/7423394b5700454db4f7cc372f4bc887/artifacts
+end_time: 1746730331307
+entry_point_name: ''
+experiment_id: '740929413330384623'
+lifecycle_stage: active
+run_id: 7423394b5700454db4f7cc372f4bc887
+run_name: illustrious-hen-936
+run_uuid: 7423394b5700454db4f7cc372f4bc887
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1746730306824
+status: 3
+tags: []
+user_id: PrincipalDA

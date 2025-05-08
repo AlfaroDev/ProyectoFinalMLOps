@@ -32,9 +32,15 @@ jobs:
       - name: ✅ Validar desempeño del modelo
         run: make validate
 
+      - name: ✏️ Obtener ruta del último modelo
+        id : ruta_ultimo_modelo
+        run: |
+          RUTA=$(python src/lastRunId.py)
+          echo "model_path=$RUTA" >> $GITHUB_OUTPUT
+
       - name: 📤 Subir modelo como artefacto (si pasa validación)
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: modelo-validado
-          path: mlruns/b18e78da3b4642be94211ddc45d0df06/artifacts/model/model.pkl
+          path: steps.ruta_ultimo_modelo.outputs.model_path

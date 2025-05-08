@@ -1,0 +1,15 @@
+artifact_uri: file:\C:\Users\dfaq_\Downloads\Maestría_Ciencia_de_datos\Semestre_1\MLOps\Proyecto_final_MLOps\mlflow-deploy\mlruns/8a8bb23d336b4f6fb65bf211297811e0/artifacts
+end_time: 1746734641798
+entry_point_name: ''
+experiment_id: '740929413330384623'
+lifecycle_stage: active
+run_id: 8a8bb23d336b4f6fb65bf211297811e0
+run_name: stylish-asp-865
+run_uuid: 8a8bb23d336b4f6fb65bf211297811e0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1746734617713
+status: 3
+tags: []
+user_id: PrincipalDA

@@ -1,0 +1,15 @@
+artifact_uri: file:\C:\Users\dfaq_\Downloads\Maestría_Ciencia_de_datos\Semestre_1\MLOps\Proyecto_final_MLOps\mlflow-deploy\mlruns/936f57ccc77c4883b1683c5ba3781b39/artifacts
+end_time: 1746731563102
+entry_point_name: ''
+experiment_id: '740929413330384623'
+lifecycle_stage: active
+run_id: 936f57ccc77c4883b1683c5ba3781b39
+run_name: puzzled-zebra-576
+run_uuid: 936f57ccc77c4883b1683c5ba3781b39
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1746731541107
+status: 3
+tags: []
+user_id: PrincipalDA

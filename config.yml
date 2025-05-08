@@ -1,6 +1,6 @@
 paths:
   data_source: "https://www.datos.gov.co/resource/ceyp-9c7c.json"
-  model_path : "mlruns/b18e78da3b4642be94211ddc45d0df06/artifacts/model/"
+  model_path : "mlruns/runId/artifacts/model/"
 
 settings:
   years: 3

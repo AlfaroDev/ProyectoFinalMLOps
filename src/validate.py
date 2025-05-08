@@ -6,6 +6,8 @@ import sys
 import os
 # Trabajar con config.yml
 import yaml
+#mlflow
+from mlflow.tracking import MlflowClient
 
 def load_config(path='config.yml'):
     with open(path, 'r') as file:
@@ -16,6 +18,7 @@ config = load_config()
 
 model_path = config['paths']['model_path']
 time_step = config['settings']['time_step']
+experiment_name = config['settings']['experiment_name']
 
 print(f"Usando variables de config.yml")
 
@@ -36,6 +39,23 @@ X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
 print(f"--- Debug: Dimensiones de X_test: {X_test.shape} ---") 
 
 # --- Cargar modelo previamente entrenado ---
+client = MlflowClient()
+experiment_name = experiment_name
+experiment = client.get_experiment_by_name(experiment_name)
+
+# Listar los runs ordenados por fecha de inicio
+runs = client.search_runs(
+    experiment_ids=[experiment.experiment_id],
+    order_by=["start_time DESC"],
+    max_results=1
+)
+
+# Obtener el run_id del último run
+latest_run = runs[0]
+run_id = latest_run.info.run_id
+
+model_path = model_path.replace("runId", run_id)
+
 model_filename = "model.pkl"
 model_path = os.path.abspath(os.path.join(os.getcwd(), model_path + model_filename))
 print(f"--- Debug: Intentando cargar modelo desde: {model_path} ---")

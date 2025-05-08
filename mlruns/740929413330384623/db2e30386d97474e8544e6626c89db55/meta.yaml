@@ -1,0 +1,15 @@
+artifact_uri: file:\C:\Users\dfaq_\Downloads\Maestría_Ciencia_de_datos\Semestre_1\MLOps\Proyecto_final_MLOps\mlflow-deploy\mlruns/db2e30386d97474e8544e6626c89db55/artifacts
+end_time: 1746731370494
+entry_point_name: ''
+experiment_id: '740929413330384623'
+lifecycle_stage: active
+run_id: db2e30386d97474e8544e6626c89db55
+run_name: glamorous-cat-82
+run_uuid: db2e30386d97474e8544e6626c89db55
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1746731347286
+status: 3
+tags: []
+user_id: PrincipalDA
