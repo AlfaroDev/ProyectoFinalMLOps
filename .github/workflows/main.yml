@@ -43,4 +43,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: modelo-validado
-          path: steps.ruta_ultimo_modelo.outputs.model_path
+          path: ${{ steps.obtener_ruta.outputs.model_path }}
